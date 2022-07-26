@@ -6,36 +6,18 @@ const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const errorsHandler = require('./middlewares/errorsHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
-
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://movies.antropovag.nomoredomains.xyz',
-    'http://movies.antropovag.nomoredomains.xyz',
-  ],
-  credentials: true,
-};
-const requestLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+const requestLimiter = require('./middlewares/limiter');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 app.use(helmet());
-app.use('*', cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 mongoose.connect('mongodb://localhost:27017/moviesdb');
-
 app.use(requestLogger);
 app.use(requestLimiter);
 app.use(router);
