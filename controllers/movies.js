@@ -4,7 +4,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const WrongDataError = require('../errors/WrongDataError');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.status(200).send(movies))
     .catch((err) => next(err));
 };
@@ -47,7 +48,7 @@ module.exports.createNewMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovieById = (req, res, next) => {
-  Movie.findByIdAndRemove(req.params.id)
+  Movie.findById(req.params.id)
     .then((movie) => {
       if (!movie) {
         return next(new NotFoundError('Такого фильма не обнаружено'));
@@ -55,7 +56,8 @@ module.exports.deleteMovieById = (req, res, next) => {
       if (movie.owner.toString() !== req.user._id) {
         return next(new NoRightsToDeleteError('Удаление запрещено'));
       }
-      return res.status(200).send({ message: 'Фильм успешно удален' });
+      return movie.remove()
+        .then(() => res.status(200).send({ message: 'Фильм успешно удален' }));
     })
     .catch((error) => {
       if (error.name === 'CastError') {

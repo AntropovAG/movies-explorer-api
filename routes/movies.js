@@ -1,13 +1,13 @@
-const router = require('express').Router();
+const moviesRouter = require('express').Router();
 const { Joi, celebrate } = require('celebrate');
 const { isURL } = require('validator');
 const {
   getMovies, createNewMovie, deleteMovieById,
 } = require('../controllers/movies');
 
-router.get('/movies', getMovies);
+moviesRouter.get('/movies', getMovies);
 
-router.post('/movies', celebrate({
+moviesRouter.post('/movies', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
@@ -38,10 +38,10 @@ router.post('/movies', celebrate({
   }),
 }), createNewMovie);
 
-router.delete('/movies/:id', celebrate({
+moviesRouter.delete('/movies/:id', celebrate({
   params: Joi.object().keys({
     id: Joi.string().hex().length(24),
   }),
 }), deleteMovieById);
 
-module.exports = router;
+module.exports = moviesRouter;
