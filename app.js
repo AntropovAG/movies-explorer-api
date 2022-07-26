@@ -15,6 +15,8 @@ const corsOptions = {
   origin: [
     'http://localhost:3000',
     'http://localhost:3001',
+    'https://movies.antropovag.nomoredomains.xyz',
+    'http://movies.antropovag.nomoredomains.xyz',
   ],
   credentials: true,
 };
