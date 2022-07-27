@@ -5,6 +5,13 @@ const {
   getMovies, createNewMovie, deleteMovieById,
 } = require('../controllers/movies');
 
+const validateURL = (message) => Joi.string().required().custom((v, helper) => {
+  if (isURL(v)) {
+    return v;
+  }
+  return helper.message(message);
+});
+
 moviesRouter.get('/movies', getMovies);
 
 moviesRouter.post('/movies', celebrate({
@@ -14,24 +21,9 @@ moviesRouter.post('/movies', celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().custom((v, helper) => {
-      if (isURL(v)) {
-        return v;
-      }
-      return helper.message('В изображении должна быть валидная ссылка');
-    }),
-    trailerLink: Joi.string().required().custom((v, helper) => {
-      if (isURL(v)) {
-        return v;
-      }
-      return helper.message('В трейлере должна быть валидная ссылка');
-    }),
-    thumbnail: Joi.string().required().custom((v, helper) => {
-      if (isURL(v)) {
-        return v;
-      }
-      return helper.message('В изображении должна быть валидная ссылка');
-    }),
+    image: validateURL('В изображении должна быть валидная ссылка'),
+    trailerLink: validateURL('В трейлере должна быть валидная ссылка'),
+    thumbnail: validateURL('В изображении должна быть валидная ссылка'),
     nameRU: Joi.string().required().min(2).max(30),
     nameEN: Joi.string().required().min(2).max(30),
     movieId: Joi.number().required(),
