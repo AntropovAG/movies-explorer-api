@@ -11,12 +11,21 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const requestLimiter = require('./middlewares/limiter');
 
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://movies.antropovag.nomoredomains.xyz',
+    'http://movies.antropovag.nomoredomains.xyz',
+  ],
+  credentials: true,
+};
 const { PORT = 3000, DATA_BASE, NODE_ENV } = process.env;
 const app = express();
 app.use(requestLogger);
 app.use(requestLimiter);
 app.use(helmet());
-app.use(cors());
+app.use('*', cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
 mongoose.connect(NODE_ENV === 'production' ? DATA_BASE : 'mongodb://localhost:27017/moviesdb');
