@@ -24,15 +24,15 @@ moviesRouter.post('/movies', celebrate({
     image: validateURL('В изображении должна быть валидная ссылка'),
     trailerLink: validateURL('В трейлере должна быть валидная ссылка'),
     thumbnail: validateURL('В изображении должна быть валидная ссылка'),
-    nameRU: Joi.string().required().min(2).max(30),
-    nameEN: Joi.string().required().min(2).max(30),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
     movieId: Joi.number().required(),
   }),
 }), createNewMovie);
 
 moviesRouter.delete('/movies/:id', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex().length(24),
+    id: Joi.string().hex(),
   }),
 }), deleteMovieById);
 
